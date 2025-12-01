@@ -62,6 +62,20 @@ CRITICAL FORMATTING REQUIREMENTS:
 - Separate paragraphs with a single blank line
 - Use transitions like "Furthermore," "However," "Moreover," etc.
 
+SPECIAL REQUIREMENTS FOR REFERENCES SECTION:
+If the section is "References" or "Bibliography":
+- Format each reference as a numbered citation: [1], [2], [3], etc.
+- Each reference must start on a new line with the number in square brackets
+- Follow this exact format for each entry:
+  [1] Author(s). Title. Publication. Year.
+  [2] Author(s). Title. Publication. Year.
+- Include 10-15 relevant academic references
+- Use proper citation format (author, title, journal/conference, pages, year)
+- Do NOT write references as paragraphs or prose
+- Example format:
+  [1] P. Smith, J. Doe. A Study on Topic. Journal of Science, vol. 10, pages 1-20. 2020.
+  [2] M. Johnson. Another Important Work. Conference Proceedings, pages 45-60. ACM, 2019.
+
 Write a comprehensive, well-researched section that is:
 - Academically rigorous and properly structured
 - Clear and coherent with smooth transitions

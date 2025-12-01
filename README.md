@@ -1,86 +1,169 @@
-# AI Research Paper Generator - API Server# Research Paper Generator with Iterative Improvement
+# AI Research Paper Generator - API Server# AI Research Paper Generator - API Server# Research Paper Generator with Iterative Improvement
 
 
 
-Minimal FastAPI server for AI-powered research paper generation.An AI-powered research paper generation system that uses iterative evaluation and refinement to produce high-quality academic content.
+Minimal FastAPI server for AI-powered research paper generation.
 
 
 
-## 🚀 Quick Start## Overview
+## 🚀 Quick StartMinimal FastAPI server for AI-powered research paper generation.An AI-powered research paper generation system that uses iterative evaluation and refinement to produce high-quality academic content.
 
 
 
-```powershellThis system implements a sophisticated workflow that:
+```powershell
 
 # Start the server
 
-python start_server.py1. **Generates** research paper content using Google Gemini 2.5 Flash
-
-```2. **Evaluates** the content using Google Gemini 2.5 Flash-Lite with multiple quality criteria
-
-3. **Refines** the content iteratively based on evaluation feedback
-
-Server runs at: **http://localhost:8000**4. **Converts** the final paper to professional LaTeX format
-
-
-
-## 📡 API Endpoints## Features
-
-
-
-### 1. Generate Paper- 🤖 **Dual-Model Architecture**: Separate generator and evaluator models for quality
-
-**POST** `/generate`- 🔄 **Iterative Improvement**: Automatic revision based on evaluation feedback
-
-- 📊 **Multi-Criteria Evaluation**: Scores for relevance, coherence, factuality, and readability
-
-```json- 📝 **LaTeX Output**: Professional research paper formatting
-
-{- ⚙️ **Configurable Thresholds**: Adjustable quality standards
-
-  "title": "Paper Title",- 🔌 **LangChain Integration**: Modular and extensible architecture
-
-  "sections": ["Abstract", "Introduction", "Conclusion"]
-
-}## Installation
+python start_server.py## 🚀 Quick Start## Overview
 
 ```
 
+
+
+Server runs at: **http://localhost:8000**
+
+```powershellThis system implements a sophisticated workflow that:
+
+## 📡 API Endpoints
+
+# Start the server
+
+### 1. Generate Paper
+
+**POST** `/generate`python start_server.py1. **Generates** research paper content using Google Gemini 2.5 Flash
+
+
+
+```json```2. **Evaluates** the content using Google Gemini 2.5 Flash-Lite with multiple quality criteria
+
+{
+
+  "title": "Paper Title",3. **Refines** the content iteratively based on evaluation feedback
+
+  "sections": ["Abstract", "Introduction", "Conclusion"]
+
+}Server runs at: **http://localhost:8000**4. **Converts** the final paper to professional LaTeX format
+
+```
+
+
+
+Returns `job_id` for tracking.
+
+## 📡 API Endpoints## Features
+
+### 2. Check Status
+
+**GET** `/status/{job_id}`
+
+
+
+Returns current generation status.### 1. Generate Paper- 🤖 **Dual-Model Architecture**: Separate generator and evaluator models for quality
+
+
+
+### 3. Get Results**POST** `/generate`- 🔄 **Iterative Improvement**: Automatic revision based on evaluation feedback
+
+**GET** `/paper/{job_id}/json` - JSON format  
+
+**GET** `/paper/{job_id}/latex` - LaTeX format- 📊 **Multi-Criteria Evaluation**: Scores for relevance, coherence, factuality, and readability
+
+
+
+## 🔧 Setup```json- 📝 **LaTeX Output**: Professional research paper formatting
+
+
+
+```powershell{- ⚙️ **Configurable Thresholds**: Adjustable quality standards
+
+pip install -r requirements.txt
+
+```  "title": "Paper Title",- 🔌 **LangChain Integration**: Modular and extensible architecture
+
+
+
+Create `.env` file with:  "sections": ["Abstract", "Introduction", "Conclusion"]
+
+```
+
+GOOGLE_API_KEY=your-key-here}## Installation
+
+```
+
+```
+
+## 📦 Core Files
+
 1. Clone the repository:
 
-Returns `job_id` for tracking.```bash
+- `api.py` - FastAPI server with job management
 
-git clone <repository-url>
+- `workflow.py` - Paper generation orchestrationReturns `job_id` for tracking.```bash
 
-### 2. Check Statuscd Report-ai
+- `generator.py` - AI content generation
+
+- `evaluator.py` - Quality evaluationgit clone <repository-url>
+
+- `latex_converter.py` - LaTeX formatting
+
+- `models.py` - LLM configuration### 2. Check Statuscd Report-ai
+
+- `config.py` - Settings
 
 **GET** `/status/{job_id}````
 
+## 📄 LaTeX Output Features
 
 
-Returns current generation status.2. Install dependencies:
 
-```bash
+- **Title Page**: Title, author, date, and abstract appear on the first page
 
-### 3. Get Resultspip install -r requirements.txt
+- **Page Breaks**: Introduction section always starts on a fresh page (`\clearpage`)Returns current generation status.2. Install dependencies:
 
-**GET** `/paper/{job_id}/json` - JSON format  ```
+- **References Formatting**: 
 
-**GET** `/paper/{job_id}/latex` - LaTeX format
+  - Model generates references as numbered list: `[1] Author. Title. Publication. Year.````bash
 
-3. Set up your API keys:
+  - LaTeX converter automatically formats with `\begin{enumerate}...\end{enumerate}`
 
-## 🔧 Setup   - Copy `.env.example` to `.env`
+  - Example output matches standard academic citation style### 3. Get Resultspip install -r requirements.txt
+
+
+
+## 🎯 Example Usage**GET** `/paper/{job_id}/json` - JSON format  ```
+
+
+
+```powershell**GET** `/paper/{job_id}/latex` - LaTeX format
+
+# Generate a paper
+
+Invoke-RestMethod -Uri "http://localhost:8000/generate" `3. Set up your API keys:
+
+  -Method Post `
+
+  -Body '{"title": "My Research Paper", "sections": ["Abstract", "Introduction", "Methods", "Results", "Discussion", "Conclusion", "References"]}' `## 🔧 Setup   - Copy `.env.example` to `.env`
+
+  -ContentType "application/json"
 
    - Get your Google AI Studio API key from https://aistudio.google.com/app/apikey
 
-```powershell   ```bash
+# Check status (use job_id from above)
 
-pip install -r requirements.txt   cp .env.example .env
+Invoke-RestMethod -Uri "http://localhost:8000/status/abc123"```powershell   ```bash
 
-```   ```
 
-   - Edit `.env` and add your API key:
+
+# Get LaTeX outputpip install -r requirements.txt   cp .env.example .env
+
+Invoke-RestMethod -Uri "http://localhost:8000/paper/abc123/latex" | Out-File paper.tex
+
+``````   ```
+
+
+
+That's it! Simple and clean.   - Edit `.env` and add your API key:
+
 
 Create `.env` file with:   ```
 

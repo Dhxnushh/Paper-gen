@@ -186,10 +186,39 @@ class LaTeXConverter:
         content = re.sub(r' +', ' ', content)
         content = re.sub(r'\n{3,}', '\n\n', content)
         
-        # Determine section level
+        # Determine section level and special formatting
         if section_name.lower() == "abstract":
             # Don't include section title in abstract
             return f"\\begin{{abstract}}\n{content}\n\\end{{abstract}}\n"
+        elif section_name.lower() in ["references", "bibliography"]:
+            # Special handling for References - convert [1] format to bibliography
+            # Parse references in format: [1] Author. Title. Journal. Year.
+            
+            # First, split by reference numbers to get individual references
+            # Use regex to split on [number] pattern while keeping the content
+            ref_pattern = r'\[(\d+)\]\s*'
+            parts = re.split(ref_pattern, content)
+            
+            ref_entries = []
+            # parts will be like: ['', '1', 'content1', '2', 'content2', ...]
+            for i in range(1, len(parts), 2):
+                if i + 1 < len(parts):
+                    ref_text = parts[i + 1].strip()
+                    if ref_text:
+                        # Clean up the reference text
+                        ref_text = ' '.join(ref_text.split())  # normalize whitespace
+                        ref_entries.append(ref_text)
+            
+            # Format as LaTeX bibliography with enumerate
+            if ref_entries:
+                bib_content = f"\\section{{{section_name}}}\n\\begin{{enumerate}}\n"
+                for ref in ref_entries:
+                    bib_content += f"\\item {ref}\n"
+                bib_content += "\\end{enumerate}\n"
+                return bib_content
+            else:
+                # Fallback if parsing fails
+                return f"\\section{{{section_name}}}\n{content}\n"
         else:
             # Ensure a single line break before the section for consistency
             return f"\\section{{{section_name}}}\n{content}\n"
@@ -232,13 +261,32 @@ class LaTeXConverter:
             "\\maketitle",
             ""
         ])
-        
-        # Add sections
-        for section_name, content in sections_content.items():
+
+        # Ensure the abstract appears immediately after the title on the first page.
+        # Extract abstract (case-insensitive) from sections_content if present.
+        # Important: Don't modify the original dictionary, use a copy
+        remaining_sections = dict(sections_content)
+        abstract_key = None
+        for k in list(remaining_sections.keys()):
+            if k.lower() == 'abstract':
+                abstract_key = k
+                break
+
+        if abstract_key is not None:
+            abstract_content = remaining_sections.pop(abstract_key)
+            # format_section will wrap abstract in \begin{abstract} ... \end{abstract}
+            latex_content.append(self.format_section('Abstract', abstract_content))
+
+        # Add remaining sections. Force Introduction to start on a fresh page.
+        for section_name, content in remaining_sections.items():
             # Note: Not escaping here as scientific content may contain LaTeX
             # Users can enable escaping if needed
+            # If this is the Introduction, ensure it starts on a new page
             formatted_section = self.format_section(section_name, content)
-            # Append section without adding extra blank lines to avoid extra vertical spacing
+            if section_name.lower() == 'introduction':
+                # make sure intro begins on a new page
+                latex_content.append('\\clearpage')
+            # Append section
             latex_content.append(formatted_section)
         
         # End document
